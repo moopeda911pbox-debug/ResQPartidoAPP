@@ -1,0 +1,1 @@
+# ResQPartidoAPP
