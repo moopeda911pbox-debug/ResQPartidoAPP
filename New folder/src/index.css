@@ -1,0 +1,418 @@
+:root {
+  --navy: #0f2545;
+  --navy-deep: #0a1a33;
+  --orange: #e0530a;
+  --orange-deep: #bf4508;
+  --gold: #c9a24b;
+  --bg: #e9ebee;
+  --border: #e2e5ea;
+  --muted: #8a929c;
+  --danger: #ff3b3b;
+  --success: #20c96b;
+}
+
+* { box-sizing: border-box; }
+
+html, body, #root {
+  margin: 0;
+  width: 100%;
+  min-height: 100%;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+  background: var(--bg);
+}
+
+a { text-decoration: none; color: inherit; }
+button { font-family: inherit; cursor: pointer; }
+input, select, textarea { font-family: inherit; }
+
+/* ---------- app shell (full-width, no device mockup) ---------- */
+.app-shell {
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.phone-frame {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  margin: 0 auto;
+  background: #fff;
+  overflow: hidden;
+}
+
+/* Above phone-sized viewports (tablet/desktop browser previewing the app,
+   or a phone rotated to landscape) keep it centered like a real device
+   instead of stretching every screen edge-to-edge. On an actual phone
+   (portrait or landscape) it stays full-bleed so nothing is letterboxed
+   inside the native/Capacitor shell. */
+@media (min-width: 481px) {
+  .phone-frame {
+    max-width: 430px;
+    height: min(100vh, 100dvh, 900px);
+    margin: env(safe-area-inset-top, 0) auto;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  }
+}
+
+.screen {
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- shared elements ---------- */
+.logo-badge {
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 35% 30%, var(--navy) 0%, var(--navy-deep) 70%);
+  border: 2px solid var(--gold);
+  flex-shrink: 0;
+}
+
+.brand-title {
+  font-weight: 800;
+  color: var(--orange);
+  margin: 0;
+}
+.brand-title span { color: var(--navy); }
+
+.brand-sub {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--navy);
+  opacity: 0.55;
+  margin: 2px 0 0;
+  text-align: center;
+}
+
+.btn-primary {
+  width: 100%;
+  height: 48px;
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  background: linear-gradient(180deg, var(--orange) 0%, var(--orange-deep) 100%);
+  transition: transform 0.1s ease;
+}
+.btn-primary:active { transform: scale(0.98); }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.btn-ghost {
+  width: 100%;
+  height: 48px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 14px;
+  background: #fff;
+  border: 1px solid var(--border);
+  color: var(--navy);
+}
+
+.field { display: block; margin-bottom: 12px; }
+.field-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 4px;
+}
+.field-input, .field-select, .field-textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0 14px;
+  font-size: 14px;
+  color: var(--navy);
+  outline: none;
+  height: 48px;
+  background: #fff;
+}
+.field-input:focus, .field-select:focus, .field-textarea:focus {
+  border-color: var(--orange);
+}
+.field-textarea { height: auto; padding: 12px 14px; resize: none; }
+
+.error-text {
+  color: var(--danger);
+  font-size: 12px;
+  margin: -6px 0 10px;
+}
+
+.topbar {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  background: var(--orange);
+  color: #fff;
+  flex-shrink: 0;
+}
+.topbar button { background: none; border: none; color: #fff; padding: 6px; }
+.topbar span { font-weight: 600; font-size: 15px; margin-left: 6px; }
+
+.popup-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 30;
+  padding: 24px;
+  overflow-y: auto;
+}
+.popup-card {
+  background: #fff;
+  border-radius: 18px;
+  width: 100%;
+  max-width: 300px;
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  margin: auto;
+}
+.popup-icon {
+  width: 56px; height: 56px; border-radius: 999px;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 12px;
+}
+
+/* ---------- alert photo/video: tap-to-expand thumbnail + lightbox ---------- */
+.alert-media-thumb {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+.alert-media-thumb-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: rgba(15, 37, 69, 0.55);
+  color: #fff;
+  backdrop-filter: blur(2px);
+}
+.alert-video-also-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: #e0530a;
+  font-weight: 600;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0 0 4px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.media-lightbox-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 24px;
+}
+.media-lightbox-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 51;
+}
+.media-lightbox-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.media-lightbox-media {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 10px;
+  display: block;
+}
+
+.settings-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 22px 0 8px;
+  padding: 0 2px;
+}
+.settings-section-title:first-of-type { margin-top: 4px; }
+
+.settings-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--navy);
+  text-align: left;
+}
+.settings-row-left { display: flex; align-items: center; gap: 10px; }
+.settings-row-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fdece0;
+  color: var(--orange);
+  flex-shrink: 0;
+}
+.settings-row.danger { color: var(--danger); }
+.settings-row.danger .settings-row-icon { background: #ffe3e3; color: var(--danger); }
+.settings-row .chevron { color: var(--muted); flex-shrink: 0; }
+
+.toggle-switch {
+  width: 42px;
+  height: 24px;
+  border-radius: 999px;
+  border: none;
+  background: #d9dce1;
+  position: relative;
+  flex-shrink: 0;
+  transition: background 0.15s ease;
+  padding: 0;
+}
+.toggle-switch.on { background: var(--orange); }
+.toggle-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: #fff;
+  transition: transform 0.15s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.toggle-switch.on .toggle-knob { transform: translateX(18px); }
+
+.avatar-circle {
+  border-radius: 999px;
+  background: #dfe3e8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #b2b9c2;
+  flex-shrink: 0;
+}
+
+.input-eye-wrap { position: relative; }
+.input-eye-wrap .field-input { padding-right: 42px; }
+.input-eye-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--muted);
+  padding: 4px;
+  display: flex;
+}
+
+.divider-row { display: flex; align-items: center; gap: 12px; margin: 20px 0 16px; }
+.divider-row .line { height: 1px; flex: 1; background: #e5e8ec; }
+.divider-row span { font-size: 11px; color: var(--muted); font-weight: 500; }
+
+.sos-type-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+@media (min-width: 380px) {
+  .sos-type-grid { grid-template-columns: 1fr 1fr 1fr; }
+}
+.social-row { display: flex; gap: 12px; }
+.social-btn {
+  flex: 1; height: 44px; border-radius: 12px; border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  font-size: 13px; font-weight: 500; color: var(--navy); background: #fff;
+}
+.social-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ---------- landscape / short-viewport tweaks ---------- */
+/* Applies on a phone rotated sideways (short height) so forms, popups, and
+   the emergency-type grid stay reachable instead of getting clipped by
+   the frame edge or crowded under the keyboard. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .topbar { height: 44px; }
+  .popup-overlay { padding: 14px; }
+  .popup-card { padding: 16px; max-width: 380px; }
+  .popup-icon { width: 40px; height: 40px; margin-bottom: 8px; }
+  .settings-section-title { margin: 14px 0 6px; }
+}
+
+/* Auth screens (Login/Signup/Create Account) use inline padding of
+   "40px 28px 32px" and a stacked logo+title block sized for portrait.
+   On short landscape viewports that alone can push the submit button and
+   social row below the fold; scale it down and shrink the logo instead. */
+@media (orientation: landscape) and (max-height: 460px) {
+  form.screen { padding: 16px 28px 20px !important; }
+  form.screen > div:first-child { margin-bottom: 12px !important; }
+  form.screen img { width: 40px !important; height: 40px !important; }
+}
+
+/* Gentle scale pulse for the "calling…" icon in OutgoingCallOverlay. */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.15); opacity: 0.7; }
+}
